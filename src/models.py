@@ -8,23 +8,45 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = 'User'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    Username = Column(String(250), nullable=False)
+    Firstname = Column(String(250), nullable=False)
+    Lastname = Column(String(250), nullable=False)
+    Email = Column(String)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Follower(Base):
+    __tablename__ = 'Follower'
+    User_from_id = Column(Integer, ForeignKey(User.id),primary_key=True)
+    User_to_id = Column(Integer, ForeignKey(User.id),primary_key=True)
+    User = relationship(User)
+
+class Post(Base):
+    __tablename__ = 'Post'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    User_id = Column(Integer, ForeignKey('User.id'))
+    User = relationship(User)
+
+class Comment(Base):
+    __tablename__ = 'Comment'
+    id = Column(Integer, primary_key=True)
+    Comment_text = Column(String(250), nullable=False)
+    Author_id = Column(Integer, ForeignKey('User.id'))
+    Post_id = Column(Integer, ForeignKey('Post.id'))
+    User = relationship(User)
+    Post = relationship(Post)
+
+class Media(Base):
+    __tablename__ = 'Media'
+    id = Column(Integer, primary_key=True)
+    type = Column(String(250), nullable=False)
+    url = Column(String(250), nullable=False)
+    Post_id = Column(Integer, ForeignKey('Post.id'))
+    Post = relationship(Post)    
+
+
+
 
     def to_dict(self):
         return {}
